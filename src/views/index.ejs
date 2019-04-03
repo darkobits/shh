@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata:400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300" rel="stylesheet">
+    <script type="text/javascript">
+      function selectAll(containerid) {
+        if (document.selection) {
+          var range = document.body.createTextRange();
+          range.moveToElementText(document.getElementById(containerid));
+          range.select();
+        } else if (window.getSelection) {
+          var range = document.createRange();
+          range.selectNode(document.getElementById(containerid));
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+        }
+      }
+    </script>
+    <style>
+      html, body {
+        align-items: center;
+        background-color: rgb(12, 12, 12);
+        background: linear-gradient(-24deg, rgb(0, 0, 0), rgb(24, 24, 24));
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+        width: 100%;
+      }
+
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+
+      .container {
+        align-items: center;
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .data-wrapper {
+        border-radius: 4px;
+        border: 1px solid #383F51;
+        padding: 14px 14px 0 14px;
+        position: relative;
+      }
+
+      .data-wrapper::after {
+        position: absolute;
+        content: ' ';
+        display: block;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 14px;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(12, 12, 12, 0.8) 100%);
+        pointer-events: none;
+      }
+
+      .data-scroll-container {
+        max-height: calc(90vh - 3em);
+        max-width: 80vw;
+        position: relative;
+        overflow: auto;
+      }
+
+      #data {
+        color: #C0C0C0;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 14px;
+        font-weight: 300;
+        padding-bottom: 14px;
+        white-space: pre;
+      }
+
+      #data:hover {
+        cursor: pointer;
+      }
+
+      #data:focus {
+        outline: none;
+      }
+
+      #data::selection {
+        background-color: #8A8A8A;
+      }
+
+      .footer {
+        width: 100%;
+      }
+
+      .message {
+        color: #C0C0C0;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+        font-size: 12px;
+        font-weight: 100;
+        letter-spacing: 0.2px;
+        text-align: center;
+        user-select: none;
+      }
+
+      .warning {
+        color: rgb(182, 15, 0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="data-wrapper">
+        <div class="data-scroll-container">
+          <div id="data" onclick="selectAll('data');" title="Single-click to select all."><%= data %></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <% if (stop) { %>
+        <p class="message">Server is no longer online. <span class="warning">Refreshing the page will result in loss of data.</span></p>
+      <% } %>
+    </div>
+  </body>
+</html>
