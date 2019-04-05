@@ -10,8 +10,8 @@ import uuid from 'uuid/v4';
 import {ShhArguments} from '../etc/types';
 import log from 'lib/log';
 import {
-  getHostHeader,
   getLocalIpAddresses,
+  getRemoteHost,
   loadData,
   parseTime,
   parseUserAgent
@@ -74,12 +74,12 @@ export default async function server(argv: ShhArguments) {
     app.get(`/${randomPath}`, async (req, res) => {
       try {
         const data = await loadData(argv);
-        const host = getHostHeader(req.headers);
+        const remoteHost = getRemoteHost(req);
 
         res.header('Connection', 'close');
         res.render('index', {data, stop: argv.stop});
 
-        log.info('', `Request served to host: ${log.chalk.bold.green(host)} ${log.chalk.dim(`(${parseUserAgent(req)})`)}`);
+        log.info('', `Request served to host: ${log.chalk.bold.green(remoteHost)} ${log.chalk.dim(`(${parseUserAgent(req)})`)}`);
 
         if (argv.stop === true && httpServer) {
           await stopServer();
@@ -98,8 +98,8 @@ export default async function server(argv: ShhArguments) {
 
     // Deny all other requests.
     app.all('*', (req, res) => {
-      const host = getHostHeader(req.headers);
-      log.info('', `Request denied from host ${log.chalk.bold.red(host)}.`);
+      const remoteHost = getRemoteHost(req);
+      log.info('', `Request denied from host ${log.chalk.bold.red(remoteHost)}.`);
       res.destroy();
     });
 

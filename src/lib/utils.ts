@@ -59,14 +59,14 @@ export function getLocalIpAddresses() {
  * If an X-Forwarded-For header is present in the provided headers object,
  * returns it. Otherwise, returns the Host header.
  */
-export function getHostHeader(headers: Request['headers']) {
-  if (headers['x-forwarded-for']) {
+export function getRemoteHost(req: Request) {
+  if (req.headers['x-forwarded-for']) {
     // @ts-ignore
-    return headers['x-forwarded-for'].toString();
+    return req.headers['x-forwarded-for'].toString();
   }
 
-  if (headers.host) {
-    return headers.host.toString();
+  if (req.connection.remoteAddress) {
+    return req.connection.remoteAddress;
   }
 
   return 'unknown';
@@ -74,30 +74,45 @@ export function getHostHeader(headers: Request['headers']) {
 
 
 /**
- * Accepts either a string or a number and returns a number.
+ * Accepts either a string or a number an object with a string and numberical
+ * representation thereof.
  */
 export function parseTime(value: string | boolean) {
-  if (value === 'Infinity' || value === false) {
-    return {string: 'indefinitely', number: Infinity};
-  }
+  try {
+    let asString: string;
+    let asNumber: number;
 
-  if (value === true) {
-    throw new Error(`Invalid timeout: ${log.chalk.yellow('true')}`);
-  }
-
-  if (value.match(/\D/g)) {
-    // Value was non-numeric (ie: "5 minutes").
-    return {
-      string: value,
-      number: ms(value)
+    const expandNotations = (str: string) => {
+      return str
+        .replace(/ms$/g, asNumber === 1 ? ' millisecond' : ' milliseconds')
+        .replace(/s$/g, asNumber === 1 ? ' second' : ' seconds')
+        .replace(/m$/g, asNumber === 1 ? ' minute' : ' minutes')
+        .replace(/h$/g, asNumber === 1 ? ' hour' : ' hours')
+        .replace(/d$/g, asNumber === 1 ? ' day' : ' days');
     };
-  }
 
-  // Value was numeric (ie: "1500").
-  return {
-    string: ms(parseInt(value, 10)),
-    number: parseInt(value, 10)
-  };
+    if (value === 'Infinity' || value === false) {
+      return {string: 'indefinitely', number: Infinity};
+    }
+
+    if (value === true) {
+      throw new Error(`Invalid timeout: ${log.chalk.yellow('true')}`);
+    }
+
+    if (value.match(/\D/g)) {
+      // Value was non-numeric (ie: "5 minutes").
+      asNumber = ms(value);
+      asString = expandNotations(ms(asNumber));
+    } else {
+      // Value was numeric (ie: "1500").
+      asNumber = parseInt(value, 10);
+      asString = expandNotations(ms(asNumber));
+    }
+
+    return {number: asNumber, string: asString};
+  } catch (err) {
+    throw new Error(`Invalid time: ${value}`);
+  }
 }
 
 
