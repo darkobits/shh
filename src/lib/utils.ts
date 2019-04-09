@@ -56,8 +56,8 @@ export function getLocalIpAddresses() {
 
 
 /**
- * If an X-Forwarded-For header is present in the provided headers object,
- * returns it. Otherwise, returns the Host header.
+ * If an X-Forwarded-For header is present in the provided request, returns it.
+ * Otherwise, returns the Host header.
  */
 export function getRemoteHost(req: Request) {
   if (req.headers['x-forwarded-for']) {
@@ -74,8 +74,8 @@ export function getRemoteHost(req: Request) {
 
 
 /**
- * Accepts either a string or a number an object with a string and numberical
- * representation thereof.
+ * Accepts either a string or a number representing an interval of time and
+ * returns an object with a string and numerical representation of the interval.
  */
 export function parseTime(value: string | boolean) {
   try {
@@ -83,12 +83,28 @@ export function parseTime(value: string | boolean) {
     let asNumber: number;
 
     const expandNotations = (str: string) => {
-      return str
-        .replace(/ms$/g, asNumber === 1 ? ' millisecond' : ' milliseconds')
-        .replace(/s$/g, asNumber === 1 ? ' second' : ' seconds')
-        .replace(/m$/g, asNumber === 1 ? ' minute' : ' minutes')
-        .replace(/h$/g, asNumber === 1 ? ' hour' : ' hours')
-        .replace(/d$/g, asNumber === 1 ? ' day' : ' days');
+      const matches = /^(\d+)(\D+)$/g.exec(str);
+
+      if (!matches) {
+        throw new Error(`Invalid timestamp: ${str}`);
+      }
+
+      const [, num, unit] = matches;
+
+      switch (unit) {
+        case 'ms':
+          return `${num} millisecond${num === '1' ? '' : 's'}`;
+        case 's':
+          return `${num} second${num === '1' ? '' : 's'}`;
+        case 'm':
+          return `${num} minute${num === '1' ? '' : 's'}`;
+        case 'h':
+          return `${num} hour${num === '1' ? '' : 's'}`;
+        case 'd':
+          return `${num} day${num === '1' ? '' : 's'}`;
+        default:
+          throw new Error(`Invalid string: ${str}`);
+      }
     };
 
     if (value === 'Infinity' || value === false) {

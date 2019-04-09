@@ -93,7 +93,7 @@ export default async function server(argv: ShhArguments) {
     // Browsers typically request this file, and we don't want it to get handled
     // by the catch-all handler below.
     app.get('/favicon.ico', (req, res) => {
-      res.send('');
+      res.end();
     });
 
     // Deny all other requests.
