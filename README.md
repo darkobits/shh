@@ -9,7 +9,7 @@
   <a href="https://github.com/sindresorhus/xo"><img src="https://img.shields.io/badge/code_style-XO-e271a5.svg?style=flat-square"></a>
 </p>
 
-Command line utility for quickly sharing information of nominal sensitivity with others.
+Command line utility for quickly sharing information of nominal sensitivity with others when chat clients, e-mail, or other mediums are not suitable.
 
 ## Install
 
