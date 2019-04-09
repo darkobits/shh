@@ -19,36 +19,42 @@ npm i -g @darkobits/shh
 
 ## Use
 
-This utility will start an HTTP server that, by default, will automatically shut-down after 1 minute **or** after the first request is served.
+This utility will start an HTTP server on a random port that will only respond to requests at a random path and that, by default, will automatically shut-down after 1 minute **or** after the first request is served.
 
-Run with default options:
+To share a string using the default options:
 
 ```
-shh "unicorns"
+shh unicorns
 ```
 
-Serve the contents of a local file:
+Will produce a link like:
+
+```
+http://10.2.3.4:60912/968524719da14def8fa2eb8ce8fc300e
+```
+
+To serve the contents of a local file:
 
 ```
 shh -f unicorns.txt
 ```
 
-Keep the server running after the first request (not recommended):
+To keep the server running after the first request (not recommended):
 
 ```
-shh "unicorns" --no-stop
+shh unicorns --no-stop
 ```
 
-Adjust the shut-down timeout:
+To adjust the shut-down timeout (not recommended):
 
 ```
-shh "unicorns" -t 5m
+shh unicorns -t 5m
 ```
 
 By default, information will only be available to other machines on your local network. If you need to share information with someone via the public Internet, pass the `-p` flag:
 
 ```
-shh "unicorns" -p
+shh unicorns -p
 ```
 
 This will create a secure tunnel using [`ngrok`](https://ngrok.com/) with TLS support.
