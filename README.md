@@ -57,7 +57,11 @@ By default, information will only be available to other machines on your local n
 shh unicorns -p
 ```
 
-This will create a secure tunnel using [`ngrok`](https://ngrok.com/) with TLS support.
+This will create a secure tunnel using [`ngrok`](https://ngrok.com/) with TLS support:
+
+```
+https://50f1751b.ngrok.io/dec57204675841c2903094e65d126341
+```
 
 ## &nbsp;
 <p align="center">
