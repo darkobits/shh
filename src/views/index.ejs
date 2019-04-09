@@ -4,17 +4,53 @@
     <title>⁣</title>
     <link href="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" rel="icon" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <script type="text/javascript">
-      function selectAll(containerid) {
+      function unselectAll() {
+        window.getSelection().removeAllRanges();
+      }
+
+      function selectContentsOfElement(el) {
         if (document.selection) {
           var range = document.body.createTextRange();
-          range.moveToElementText(document.getElementById(containerid));
+          range.moveToElementText(el);
           range.select();
+
         } else if (window.getSelection) {
           var range = document.createRange();
-          range.selectNode(document.getElementById(containerid));
+          range.selectNode(el);
           window.getSelection().removeAllRanges();
           window.getSelection().addRange(range);
+        }
+      }
+
+      function copyContentsOfElement(el) {
+        try {
+          selectContentsOfElement(el);
+
+          var wasSuccessful = document.execCommand('copy');
+
+          if (!wasSuccessful) {
+            throw new Error('Unknown error.');
+          }
+
+          return true;
+        } catch (err) {
+          console.error(`Copy operation failed: ${err.message}`);
+        } finally {
+          unselectAll();
+        }
+      }
+
+      function handleElementClick(el) {
+        selectContentsOfElement(el);
+      }
+
+      function handleCopyClick(el) {
+        var result = copyContentsOfElement(document.getElementById('data'));
+
+        if (result) {
+          el.style.borderColor = '#36CA75';
         }
       }
     </script>
@@ -35,18 +71,22 @@
         box-sizing: inherit;
       }
 
+      *:focus {
+        outline: none;
+      }
+
       .container {
         align-items: center;
         display: flex;
+        flex-direction: column;
         flex-grow: 1;
         justify-content: center;
-        width: 100%;
       }
 
       .data-wrapper {
         border-radius: 4px;
         border: 1px solid #383F51;
-        padding: 14px 14px 0 14px;
+        /* padding: 14px 14px 0 14px; */
         position: relative;
       }
 
@@ -57,7 +97,7 @@
         bottom: 0;
         content: ' ';
         display: block;
-        height: 14px;
+        height: 16px;
         left: 0;
         pointer-events: none;
         position: absolute;
@@ -68,6 +108,7 @@
         max-height: calc(90vh - 3em);
         max-width: 80vw;
         overflow: auto;
+        padding: 16px 20px 16px 16px;
         position: relative;
       }
 
@@ -84,12 +125,38 @@
         cursor: pointer;
       }
 
-      #data:focus {
-        outline: none;
-      }
-
       #data::selection {
         background-color: #8A8A8A;
+      }
+
+      .copy-button-wrapper {
+        margin-top: 4px;
+        text-align: right;
+        width: 100%;
+      }
+
+      .copy-button {
+        appearance: none;
+        background-color: transparent;
+        border-radius: 4px;
+        border: 1px solid #383F51;
+        color: #C0C0C0;
+        font-size: 16px;
+        max-height: 32px;
+        max-width: 32px;
+        min-height: 32px;
+        min-width: 32px;
+        padding: 6px;
+        transition: background-color 0.15s ease-in-out, border-color 0.5s ease;
+      }
+
+      .copy-button:hover {
+        cursor: pointer;
+      }
+
+      .copy-button:active {
+        color: #A0A0A0;
+        font-size: 15px;
       }
 
       .footer {
@@ -115,8 +182,11 @@
     <div class="container">
       <div class="data-wrapper">
         <div class="data-scroll-container">
-          <div id="data" onclick="selectAll('data');" title="Single-click to select all."><%= data %></div>
+          <div id="data" onmouseup="handleElementClick(this);" title="Single-click to select all."><%= data %></div>
         </div>
+      </div>
+      <div class="copy-button-wrapper">
+        <button class="copy-button" onmouseup="handleCopyClick(this);"><i class="far fa-copy"></i></button>
       </div>
     </div>
     <div class="footer">
