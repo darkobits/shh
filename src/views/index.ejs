@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>-</title>
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata:400" rel="stylesheet">
+    <title>⁣</title>
+    <link href="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" rel="icon" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300" rel="stylesheet">
     <script type="text/javascript">
       function selectAll(containerid) {
@@ -51,22 +51,24 @@
       }
 
       .data-wrapper::after {
-        position: absolute;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(12, 12, 12, 0.8) 100%);
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        bottom: 0;
         content: ' ';
         display: block;
-        bottom: 0;
-        left: 0;
-        right: 0;
         height: 14px;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(12, 12, 12, 0.8) 100%);
+        left: 0;
         pointer-events: none;
+        position: absolute;
+        right: 0;
       }
 
       .data-scroll-container {
         max-height: calc(90vh - 3em);
         max-width: 80vw;
-        position: relative;
         overflow: auto;
+        position: relative;
       }
 
       #data {
