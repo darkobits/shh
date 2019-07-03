@@ -1,10 +1,11 @@
 import os from 'os';
 import path from 'path';
 
+import crawlerUserAgents from 'crawler-user-agents';
 import {Request} from 'express';
 import fs from 'fs-extra';
 import ms from 'ms';
-import UAParser from 'ua-parser-js';
+import {UAParser} from 'ua-parser-js';
 
 import log from 'lib/log';
 import {ShhArguments} from '../etc/types';
@@ -14,26 +15,26 @@ import {ShhArguments} from '../etc/types';
  * If we were passed the -f or --file option, load the indicated file. Otherwise
  * use the raw input provided as the first command line argument.
  */
-export async function loadData(argv: ShhArguments) {
+export async function loadData(args: ShhArguments) {
   try {
-    if (argv.file) {
-      return await fs.readFile(path.resolve(argv.file), 'utf-8');
+    if (args.file) {
+      return await fs.readFile(path.resolve(args.file), 'utf-8');
     }
+
+    const rawData = args.secret;
+
+    if (!rawData) {
+      throw new Error('No data provided.');
+    }
+
+    return rawData;
   } catch (err) {
     if (err.code === 'ENOENT') {
-      throw new Error(`File ${log.chalk.green(argv.file as string)} does not exist or is not readable.`);
+      throw new Error(`File ${log.chalk.green(args.file as string)} does not exist or is not readable.`);
     }
 
     throw err;
   }
-
-  const rawData = argv._[0];
-
-  if (!rawData) {
-    throw new Error('No data provided.');
-  }
-
-  return rawData;
 }
 
 
@@ -162,4 +163,19 @@ export function parseUserAgent(req: Request) {
   }
 
   return `${browserStr}, ${systemStr}`;
+}
+
+
+/**
+ * Returns `true` if the provided Request was initiated by a well-known bot or
+ * crawler.
+ */
+export function isBot(req: Request) {
+  for (const entry of crawlerUserAgents) {
+    if (new RegExp(entry.pattern).test(req.headers['user-agent'] as string)) {
+      return true;
+    }
+  }
+
+  return false;
 }
