@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs';
+import os from 'os';
+import cli from '@darkobits/saffron';
 
 import {ShhArguments} from 'etc/types';
 import log from 'lib/log';
 import server from 'lib/server';
 
 
-yargs.command({
+cli.command<ShhArguments>({
   command: '* [secret]',
-  describe: 'Run a short-lived local server to quickly share information with others.',
-  builder: command => {
+  description: 'Run a short-lived local server to quickly share information with others.',
+  builder: ({command}) => {
     command.positional('secret', {
       description: 'Share the indicated information.',
       required: false,
@@ -59,29 +60,17 @@ yargs.command({
 
     return command;
   },
-  handler: async (args: ShhArguments) => {
+  handler: async ({argv}) => {
     try {
-      log.silly('args', args);
-      await server(args);
+      log.silly('args', argv);
+      await server(argv);
     } catch (err) {
-      const [message, ...stack] = err.stack.split('\n');
-      log.error('', message);
-      log.verbose('', stack.join('\n'));
-      process.exit(1);
+      log.error('', err.message);
+      log.verbose('', err.stack.split(os.EOL).slice(1).join(os.EOL));
+      process.exit(err.code || 1);
     }
   }
 });
 
 
-yargs.alias('v', 'version');
-yargs.alias('h', 'help');
-
-yargs.showHelpOnFail(true, 'See --help for usage instructions.');
-yargs.wrap(yargs.terminalWidth());
-yargs.version();
-yargs.strict();
-yargs.help();
-
-
-// Parse command-line arguments, bail on --help, --version.
-export default yargs.argv;
+cli.init();
