@@ -1,9 +1,9 @@
 <a href="#top" id="top">
-  <img src="https://user-images.githubusercontent.com/441546/98890197-45aecf80-2450-11eb-91da-8362a5a1f1bc.png" style="max-width: 100%;">
+  <img src="https://user-images.githubusercontent.com/441546/98939861-f217a280-249e-11eb-94d1-b6d594ca4e5d.png" style="max-width: 100%;">
 </a>
 <p align="center">
   <a href="https://www.npmjs.com/package/@darkobits/shh"><img src="https://img.shields.io/npm/v/@darkobits/shh.svg?style=flat-square"></a>
-  <a href="https://github.com/darkobits/shh/actions"><img src="https://img.shields.io/endpoint?url=https://aws.frontlawn.net/ga-shields/darkobits/shh&style=flat-square"></a>
+  <a href="https://travis-ci.com/darkobits/shh"><img src="https://img.shields.io/travis/com/darkobits/shh/master?style=flat-square"></a>
   <a href="https://david-dm.org/darkobits/shh"><img src="https://img.shields.io/david/darkobits/shh.svg?style=flat-square"></a>
   <a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/conventional%20commits-1.0.0-FB5E85.svg?style=flat-square"></a>
 </p>
