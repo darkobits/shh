@@ -1,14 +1,13 @@
 import os from 'os';
 import path from 'path';
 
-import crawlerUserAgents from 'crawler-user-agents';
-import {Request} from 'express';
+import { Request } from 'express';
 import fs from 'fs-extra';
 import ms from 'ms';
-import {UAParser} from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 import log from 'lib/log';
-import {ShhArguments} from '../etc/types';
+import { ShhArguments } from '../etc/types';
 
 
 /**
@@ -44,10 +43,12 @@ export async function loadData(args: ShhArguments) {
 export function getLocalIpAddresses() {
   const addresses: Array<string> = [];
 
-  Object.values(os.networkInterfaces()).forEach(iface => {
-    iface.forEach(ifaceInfo => {
-      if (ifaceInfo.family === 'IPv4' && ifaceInfo.address !== '127.0.0.1') {
-        addresses.push(ifaceInfo.address);
+  Object.values(os.networkInterfaces()).forEach(networkInterface => {
+    if (!networkInterface) return;
+
+    networkInterface.forEach(({ address, family }) => {
+      if (family === 'IPv4' && address !== '127.0.0.1') {
+        addresses.push(address);
       }
     });
   });
@@ -122,12 +123,12 @@ export function parseTime(value: string | boolean) {
       asString = expandNotations(ms(asNumber));
     } else {
       // Value was numeric (ie: "1500").
-      asNumber = parseInt(value, 10);
+      asNumber = Number.parseInt(value, 10);
       asString = expandNotations(ms(asNumber));
     }
 
     return {number: asNumber, string: asString};
-  } catch (err) {
+  } catch  {
     throw new Error(`Invalid time: ${value}`);
   }
 }
@@ -147,35 +148,14 @@ export function parseUserAgent(req: Request) {
   const system = parser.getOS();
   let browserStr: string;
 
-  if (browser.version) {
+  if (browser.name && browser.version) {
     const majorVersion = browser.version.split('.')[0];
     browserStr = `${browser.name} ${majorVersion}`;
   } else {
-    browserStr = browser.name || 'unknown browser';
+    browserStr = 'unknown browser';
   }
 
-  let systemStr: string;
-
-  if (system.name && system.version) {
-    systemStr = `${system.name} ${system.version}`;
-  } else {
-    systemStr = 'unknown OS';
-  }
+  const systemStr = system.name && system.version ? `${system.name} ${system.version}` : 'unknown OS';
 
   return `${browserStr}, ${systemStr}`;
-}
-
-
-/**
- * Returns `true` if the provided Request was initiated by a well-known bot or
- * crawler.
- */
-export function isBot(req: Request) {
-  for (const entry of crawlerUserAgents) {
-    if (new RegExp(entry.pattern).test(req.headers['user-agent'] as string)) {
-      return true;
-    }
-  }
-
-  return false;
 }

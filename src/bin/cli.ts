@@ -1,11 +1,9 @@
-#!/usr/bin/env node
-
 import os from 'os';
 import cli from '@darkobits/saffron';
 
 import {ShhArguments} from 'etc/types';
 import log from 'lib/log';
-import server from 'lib/server';
+import server from 'server';
 
 
 cli.command<ShhArguments>({
@@ -63,7 +61,10 @@ cli.command<ShhArguments>({
   handler: async ({argv}) => {
     try {
       log.silly('args', argv);
+
       await server(argv);
+
+      process.exit(0);
     } catch (err) {
       log.error('', err.message);
       log.verbose('', err.stack.split(os.EOL).slice(1).join(os.EOL));

@@ -1,3 +1,3 @@
 import LogFactory from '@darkobits/log';
 
-export default LogFactory('shh');
+export default LogFactory({ heading: 'shh' });

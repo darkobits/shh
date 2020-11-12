@@ -1,28 +1,13 @@
 {
-  "extends": "./node_modules/@darkobits/ts-unified/dist/config/tsconfig.json",
+  "extends": "@darkobits/ts-unified/dist/config/tsconfig.json",
   "compilerOptions": {
-    "lib": [
-      "dom"
-    ],
-
-    // Base directory to resolve non-relative module names.
+    "plugins": [{
+      "name": "typescript-styled-plugin"
+    }],
     "baseUrl": ".",
-
-    "downlevelIteration": true,
-
     "jsx": "react",
-
-    // Redirect output structure to this directory.
+    "lib": ["dom"],
     "outDir": "dist",
-
-    "resolveJsonModule": true,
-
-    // Specify path mapping to be computed relative to baseUrl option.
-    "paths": {
-      "*": [
-        "*",
-        "src/*"
-      ]
-    }
+    "paths": {"*": ["*", "src/*"]}
   }
 }

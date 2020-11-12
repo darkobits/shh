@@ -1,5 +1,5 @@
 <a href="#top" id="top">
-  <img src="https://user-images.githubusercontent.com/441546/55774650-e81ff900-5a4a-11e9-833d-b28a482bed88.png" style="max-width: 100%;">
+  <img src="https://user-images.githubusercontent.com/441546/98890197-45aecf80-2450-11eb-91da-8362a5a1f1bc.png" style="max-width: 100%;">
 </a>
 <p align="center">
   <a href="https://www.npmjs.com/package/@darkobits/shh"><img src="https://img.shields.io/npm/v/@darkobits/shh.svg?style=flat-square"></a>

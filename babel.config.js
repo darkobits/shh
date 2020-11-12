@@ -1,5 +1,11 @@
-module.exports = require('@darkobits/ts-unified/dist/config/babel')({
+module.exports = {
+  extends: '@darkobits/ts-unified/dist/config/babel',
   presets: [
-    '@babel/preset-react'
+    // This option is needed to support fork-ts-checker plugin.
+    ['@babel/preset-typescript', { onlyRemoveTypeImports: true }],
+    'linaria/babel'
+  ],
+  plugins: [
+    'react-hot-loader/babel'
   ]
-});
+};

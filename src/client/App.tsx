@@ -1,17 +1,8 @@
+import { styled } from 'linaria/react';
 import React, {useEffect, useRef, useState} from 'react';
-import {keyframes} from '@emotion/core';
-import styled from '@emotion/styled';
-
-import Global from 'client/global';
 
 
 // ----- Styles ----------------------------------------------------------------
-
-const animateBorderColor = (fromColor: string, toColor: string) => keyframes`
-  0%   { border-color: ${fromColor}; }
-  50%  { border-color: ${toColor}; }
-  100% { border-color: ${fromColor}; }
-`;
 
 const Container = styled.div`
   align-items: center;
@@ -56,32 +47,30 @@ const CopyButtonWrapper = styled.div`
 `;
 
 const CopyButton = styled.button`
+  @keyframes animateBorderColor {
+    0%   { border-color: #383F51; }
+    5%  { border-color: #36CA75; }
+    100%   { border-color: #383F51; }
+  }
+
   appearance: none;
   background-color: transparent;
   border-radius: 4px;
   border: 1px solid;
   border-color: #383F51;
-  color: #C0C0C0;
-  font-size: 16px;
-  max-height: 32px;
-  max-width: 32px;
-  min-height: 32px;
-  min-width: 32px;
-  padding: 6px;
-  transition: border-color 0.1s ease;
-
-  /* &.on-click {
-    animation: ${animateBorderColor('#383F51', '#36CA75')} 0.5s ease-in-out;
-  } */
+  color: #959595;
+  font-size: 12px;
+  padding: 10px 12px;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
 
   &:hover {
     cursor: pointer;
+    color: #C0C0C0;
   }
 
-  &:active {
-    border-color: #36CA75;
-    color: #A0A0A0;
-    font-size: 15px;
+  &.animate-border {
+    animation: animateBorderColor 2s ease-in;
   }
 `;
 
@@ -109,8 +98,8 @@ const Footer = styled.div`
 const Message = styled.p`
   color: #C0C0C0;
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
-  font-size: 12px;
-  font-weight: 100;
+  font-size: 14px;
+  font-weight: 200;
   letter-spacing: 0.2px;
   text-align: center;
   user-select: none;
@@ -118,6 +107,7 @@ const Message = styled.p`
 
 const Warning = styled.span`
   color: rgb(182, 15, 0);
+  font-weight: 300;
 `;
 
 
@@ -129,10 +119,10 @@ const Warning = styled.span`
  */
 function loadData(id: string) {
   try {
-    const el = document.getElementById(id);
+    const el = document.querySelector(`#${id}`);
 
     if (!el) {
-      throw new Error('Data element not found.');
+      throw new Error(`Data element not found at id "${id}".`);
     }
 
     const d = JSON.parse(el.innerHTML);
@@ -196,10 +186,11 @@ function copyContentsOfElement(el: HTMLElement) {
 }
 
 
-export default () => {
-  const dataRef = useRef<HTMLDivElement>(null); // tslint:disable-line no-null-keyword
-  const copyRef = useRef<HTMLButtonElement>(null); // tslint:disable-line no-null-keyword
+const AppNew: React.FunctionComponent = () => {
+  const dataRef = useRef<HTMLDivElement>(null);
+  const copyRef = useRef<HTMLButtonElement>(null);
   const [data, setData] = useState({} as any);
+
 
   /**
    * Load data once when the component is mounted.
@@ -212,19 +203,19 @@ export default () => {
   /**
    * Click handler for the data container.
    */
-  function handleElementClick() {
+  const handleElementClick = React.useCallback(() => {
     if (!dataRef.current) {
       return;
     }
 
     selectContentsOfElement(dataRef.current);
-  }
+  }, [dataRef.current]);
 
 
   /**
    * Click handler for the Copy button.
    */
-  function handleCopyClick() {
+  const handleCopyClick = React.useCallback(() => {
     if (!dataRef.current || !copyRef.current) {
       return;
     }
@@ -232,30 +223,35 @@ export default () => {
     const copyEl = copyRef.current;
 
     const onAnimationEnd = () => {
-      copyEl.classList.remove('on-click');
+      copyEl.classList.remove('animate-border');
       copyEl.removeEventListener('animationend', onAnimationEnd);
     };
 
-    copyEl.classList.add('on-click');
+    copyEl.classList.add('animate-border');
     copyEl.addEventListener('animationend', onAnimationEnd);
 
     copyContentsOfElement(dataRef.current);
-  }
+  }, [dataRef.current]);
+
+  console.log('HALLO');
 
 
   return (<>
-    <Global />
     <Container>
       <DataWrapper>
         <DataScrollContainer>
-          <Data ref={dataRef} onMouseUp={handleElementClick} title='Copy'>
+          <Data
+            title="Copy"
+            onMouseUp={handleElementClick}
+            ref={dataRef}
+          >
             {data ? data.data : undefined}
           </Data>
         </DataScrollContainer>
       </DataWrapper>
       <CopyButtonWrapper>
         <CopyButton ref={copyRef} onClick={handleCopyClick}>
-          <i className='far fa-copy'></i>
+          COPY <i className="far fa-copy" />
         </CopyButton>
       </CopyButtonWrapper>
     </Container>
@@ -264,3 +260,6 @@ export default () => {
     </Footer>
   </>);
 };
+
+
+export default AppNew;

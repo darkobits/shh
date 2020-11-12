@@ -1,4 +1,4 @@
-import {Arguments} from 'yargs';
+import { Arguments } from 'yargs';
 
 
 /**
