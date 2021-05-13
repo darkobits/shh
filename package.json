@@ -32,7 +32,7 @@
     "linaria": "^2.0.0-alpha.1",
     "ms": "^2.1.2",
     "ngrok": "^3.3.0",
-    "ua-parser-js": "^0.7.22",
+    "ua-parser-js": "^0.7.28",
     "uuid": "^8.3.1"
   },
   "devDependencies": {
